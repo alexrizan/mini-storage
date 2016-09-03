@@ -5,11 +5,13 @@
 
 
 --продукт и количество случаев, когда он был первой покупкой клиента:
-Select ProductId, Count(ProductId) from Sales
-Where DateCreated in  
-(Select MIN(DateCreated) from Sales
-Group by CustomerId)
-Group by ProductId
+
+Select ProductId, Count(ProductId) as [FirstOrderCount] from Sales
+JOIN
+(Select CustomerId, MIN(DateCreated) as FirstOrder from Sales
+Group by CustomerId) FTO
+ON Sales.CustomerId = FTO.CustomerId AND Sales.DateCreated = FTO.FirstOrder
+GROUP BY ProductId
 
 ------------------------------------------------------------------
 ---Для проверки результатов---
